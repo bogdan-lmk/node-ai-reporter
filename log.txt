@@ -1,0 +1,383 @@
+Инициализация Telegram клиента...
+[33m[2025-04-08T01:26:03.338] [INFO] - [Running gramJS version 2.26.21][0m
+(node:59434) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[33m[2025-04-08T01:26:03.341] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T01:26:03.506] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T01:26:03.507] [INFO] - [Using LAYER 198 for initial connect][0m
+[33m[2025-04-08T01:26:03.670] [INFO] - [System clock is wrong, set time offset to -156s][0m
+Сохраняем строку сессии. В следующий раз используйте эту строку в переменной окружения STRING_SESSION
+1AQAOMTQ5LjE1NC4xNzUuNTEBu66ZfUj6KxK480QW7p+5FKSJd3p4M4S2hUFvEC0PyQg5YDWXL0cyQfP0hD9SNew39AzcsgtjW1D6STZZY4sjUUXEvrI+lup63SvFsitH/cdfJ65NBK1+dSETIVZR7f05y5hv2KXqsykdCLwd+8NloxGny4UdgiVsUKtnad9uYcPwgpT5n+zSgeMuCj57+1ZyXsh1yAMJ1CCjnlJLlKvzqfa7Dg9A+/YE0T3L9Ws94dJM1iJibgY9LS2pva6auRqkWGOolEkIF5fDLugp5C9V0ULyvsg4/5wTCkE5PNi4YCPCYyuQoW56oOZ33nAIqrYJmgBd7ykKwv0ZnjlRtYl44f8=
+Telegram клиент успешно инициализирован
+Starting initial processing for all geos
+Starting message parsing for DEU
+Parsing messages from group: -1002158812012
+Starting message parsing for ESP
+Parsing messages from group: -1001727866141
+Starting message parsing for PRT
+Parsing messages from group: -1002239405289
+Bot started
+Parsing messages from group: -1001783625336
+Parsing messages from group: -1001590941393
+Parsing messages from group: -1001713113247
+Successfully saved 195 messages to /Users/buyer7/Desktop/node-js-santiment-bot/data/raw/messages_DEU.csv
+Starting analysis for DEU
+Analysis for DEU completed and saved
+Generating charts for DEU
+Charts for DEU generated successfully
+Generating report for DEU using deepseek-reasoner
+Successfully saved 182 messages to /Users/buyer7/Desktop/node-js-santiment-bot/data/raw/messages_PRT.csv
+Starting analysis for PRT
+Analysis for PRT completed and saved
+Generating charts for PRT
+Charts for PRT generated successfully
+Generating report for PRT using deepseek-reasoner
+Successfully saved 197 messages to /Users/buyer7/Desktop/node-js-santiment-bot/data/raw/messages_ESP.csv
+Starting analysis for ESP
+Analysis for ESP completed and saved
+Generating charts for ESP
+Charts for ESP generated successfully
+Generating report for ESP using deepseek-reasoner
+Report for PRT generated and saved
+Complete processing for PRT finished
+Report for ESP generated and saved
+Complete processing for ESP finished
+Report for DEU generated and saved
+Complete processing for DEU finished
+Generating report for ESP using deepseek-reasoner
+Progress update error: Invalid count value: -1
+Progress update error: Invalid count value: -2
+Progress update error: Invalid count value: -3
+Progress update error: Invalid count value: -4
+Progress update error: Invalid count value: -5
+Report for ESP generated and saved
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T01:52:06.291] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T01:52:06.295] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T01:52:06.296] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T01:52:06.298] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T01:52:06.301] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T01:52:06.307] [INFO] - [connection closed][0m
+[33m[2025-04-08T01:52:06.464] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T01:52:06.465] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T02:09:00.651] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T02:09:00.655] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T02:09:00.655] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T02:09:00.658] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T02:09:00.659] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T02:09:00.663] [INFO] - [connection closed][0m
+[33m[2025-04-08T02:09:00.812] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T02:09:00.813] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T02:28:52.596] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T02:28:52.599] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T02:28:52.600] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T02:28:52.600] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T02:28:52.601] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T02:28:52.602] [INFO] - [connection closed][0m
+[33m[2025-04-08T02:28:52.752] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T02:28:52.752] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T02:48:14.639] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T02:48:14.644] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T02:48:14.644] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T02:48:14.645] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T02:48:14.651] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T02:48:14.652] [INFO] - [connection closed][0m
+[33m[2025-04-08T02:48:14.799] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T02:48:14.800] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T03:06:26.653] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T03:06:26.656] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T03:06:26.657] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T03:06:26.657] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T03:06:26.659] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T03:06:26.660] [INFO] - [connection closed][0m
+[33m[2025-04-08T03:06:26.821] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T03:06:26.823] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T03:22:13.039] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T03:22:13.040] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T03:22:13.040] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T03:22:13.041] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T03:22:13.043] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T03:22:13.044] [INFO] - [connection closed][0m
+[33m[2025-04-08T03:22:13.193] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T03:22:13.194] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T03:32:29.656] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T03:32:29.657] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T03:32:29.658] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T03:32:29.658] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T03:32:29.659] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T03:32:29.661] [INFO] - [connection closed][0m
+[33m[2025-04-08T03:32:29.815] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T03:32:29.816] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T03:48:50.352] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T03:48:50.353] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T03:48:50.353] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T03:48:50.354] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T03:48:50.355] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T03:48:50.356] [INFO] - [connection closed][0m
+[33m[2025-04-08T03:48:50.503] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T03:48:50.504] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T04:05:37.458] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T04:05:37.459] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T04:05:37.459] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T04:05:37.460] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T04:05:37.461] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T04:05:37.463] [INFO] - [connection closed][0m
+[33m[2025-04-08T04:05:37.614] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T04:05:37.615] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T04:22:32.215] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T04:22:32.216] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T04:22:32.217] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T04:22:32.218] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T04:22:32.220] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T04:22:32.221] [INFO] - [connection closed][0m
+[33m[2025-04-08T04:22:32.370] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T04:22:32.371] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T04:38:18.428] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T04:38:18.428] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T04:38:18.429] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T04:38:18.430] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T04:38:18.431] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T04:38:18.432] [INFO] - [connection closed][0m
+[33m[2025-04-08T04:38:18.582] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T04:38:18.583] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T04:54:36.990] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T04:54:36.994] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T04:54:36.994] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T04:54:36.995] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T04:54:36.996] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T04:54:36.998] [INFO] - [connection closed][0m
+[33m[2025-04-08T04:54:37.152] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T04:54:37.152] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T05:13:49.130] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T05:13:49.131] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T05:13:49.132] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T05:13:49.133] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T05:13:49.134] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T05:13:49.136] [INFO] - [connection closed][0m
+[33m[2025-04-08T05:13:49.284] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T05:13:49.285] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T05:30:02.911] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T05:30:02.912] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T05:30:02.913] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T05:30:02.913] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T05:30:02.914] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T05:30:02.916] [INFO] - [connection closed][0m
+[33m[2025-04-08T05:30:03.070] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T05:30:03.070] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T05:35:04.627] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T05:35:04.628] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T05:35:04.628] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T05:35:04.629] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T05:35:04.629] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T05:35:04.631] [INFO] - [connection closed][0m
+[33m[2025-04-08T05:35:04.787] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T05:35:04.788] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T05:40:05.517] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T05:40:05.518] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T05:40:05.518] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T05:40:05.519] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T05:40:05.520] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T05:40:05.520] [INFO] - [connection closed][0m
+[33m[2025-04-08T05:40:05.674] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T05:40:05.675] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T05:50:02.670] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T05:50:02.671] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T05:50:02.671] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T05:50:02.672] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T05:50:02.673] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T05:50:02.675] [INFO] - [connection closed][0m
+[33m[2025-04-08T05:50:02.830] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T05:50:02.831] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T05:55:05.275] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T05:55:05.275] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T05:55:05.276] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T05:55:05.277] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T05:55:05.278] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T05:55:05.279] [INFO] - [connection closed][0m
+[33m[2025-04-08T05:55:05.429] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T05:55:05.430] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T06:11:05.739] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T06:11:05.740] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T06:11:05.740] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T06:11:05.741] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T06:11:05.742] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T06:11:05.743] [INFO] - [connection closed][0m
+[33m[2025-04-08T06:11:05.897] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T06:11:05.898] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T06:29:41.776] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T06:29:41.779] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T06:29:41.780] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T06:29:41.780] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T06:29:41.781] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T06:29:41.783] [INFO] - [connection closed][0m
+[33m[2025-04-08T06:29:41.938] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T06:29:41.939] [INFO] - [Handling reconnect!][0m
+Error: TIMEOUT
+    at /Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:250:85
+    at async _updateLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/client/updates.js:191:17)
+[33m[2025-04-08T06:46:49.272] [INFO] - [Started reconnecting][0m
+[35m[2025-04-08T06:46:49.273] [WARN] - [[Reconnect] Closing current connection...][0m
+[33m[2025-04-08T06:46:49.273] [INFO] - [Disconnecting from 149.154.175.51:80/TCPFull...][0m
+[35m[2025-04-08T06:46:49.273] [WARN] - [Connection closed while receiving data][0m
+Error: Not connected
+    at ConnectionTCPFull.recv (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/connection/Connection.js:71:15)
+    at async MTProtoSender._recvLoop (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/telegram/network/MTProtoSender.js:373:24)
+[33m[2025-04-08T06:46:49.274] [INFO] - [Connecting to 149.154.175.51:80/TCPFull...][0m
+[33m[2025-04-08T06:46:49.275] [INFO] - [connection closed][0m
+[33m[2025-04-08T06:46:49.430] [INFO] - [Connection to 149.154.175.51:80/TCPFull complete!][0m
+[33m[2025-04-08T06:46:49.431] [INFO] - [Handling reconnect!][0m
+Generating report for DEU using deepseek-reasoner
+Unhandled error while processing {
+  update_id: 831876650,
+  callback_query: {
+    id: '1362161046249667565',
+    from: {
+      id: 317152833,
+      is_bot: false,
+      first_name: 'Bogdan',
+      last_name: 'Lameko',
+      username: 'bogdan_lmk',
+      language_code: 'ru'
+    },
+    message: {
+      message_id: 435,
+      from: [Object],
+      chat: [Object],
+      date: 1744083895,
+      text: '📌 Выбран регион: Германия',
+      reply_markup: [Object]
+    },
+    chat_instance: '-4777540186122801944',
+    data: 'report_DEU'
+  }
+}
+Progress update error: request to https://api.telegram.org/bot7399885706:[REDACTED]/editMessageText failed, reason: read ECONNRESET
+/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/p-timeout/index.js:39
+			const timeoutError = fallback instanceof Error ? fallback : new TimeoutError(message);
+			                                                            ^
+
+TimeoutError: Promise timed out after 90000 milliseconds
+    at Timeout._onTimeout (/Users/buyer7/Desktop/node-js-santiment-bot/node_modules/p-timeout/index.js:39:64)
+    at listOnTimeout (node:internal/timers:594:17)
+    at process.processTimers (node:internal/timers:529:7)
+
+Node.js v22.11.0

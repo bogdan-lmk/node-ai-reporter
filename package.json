@@ -1,0 +1,26 @@
+{
+  "name": "js-santiment-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "canvas": "^3.1.0",
+    "chart.js": "^3.9.1",
+    "csv-writer": "^1.6.0",
+    "dotenv": "^16.4.7",
+    "franc": "^6.2.0",
+    "input": "^1.0.1",
+    "natural": "^8.0.1",
+    "node-schedule": "^2.1.1",
+    "node-telegram-bot-api": "^0.66.0",
+    "telegraf": "^4.16.3",
+    "telegram": "^2.26.22"
+  }
+}
