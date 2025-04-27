@@ -18,11 +18,13 @@ module.exports = async function initTelegramClient() {
         parseInt(process.env.API_ID),
         process.env.API_HASH,
         {
-          connectionRetries: 5,
-          timeout: 10000, // 10 second timeout
-          retryDelay: 2000, // 2 seconds between retries
+          connectionRetries: 10,
+          timeout: 30000, // 30 second timeout
+          retryDelay: 5000, // 5 seconds between retries
           autoReconnect: true,
-          useWSS: true // Use WebSocket for better connection stability
+          useWSS: true,
+          maxConcurrentDownloads: 1, // Reduce connection load
+          floodSleepLimit: 60 // Increase flood wait limit
         }
       );
       
@@ -44,6 +46,8 @@ module.exports = async function initTelegramClient() {
       return client;
     } catch (error) {
       console.error('Ошибка при инициализации Telegram клиента:', error);
-      throw error;
+      // Implement exponential backoff before retrying
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      return initTelegramClient(); // Retry initialization
     }
 };

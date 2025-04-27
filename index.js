@@ -1,35 +1,25 @@
 const { Telegraf, Markup } = require('telegraf');
-const { Api, TelegramClient } = require('telegram');
-const { StringSession } = require('telegram/sessions');
-const input = require('input');
-const { createObjectCsvWriter } = require('csv-writer');
+
+
 const fs = require('fs');
 const path = require('path');
-const natural = require('natural');
-const { Chart } = require('chart.js');
-const { createCanvas } = require('canvas');
-const axios = require('axios');
+
 const schedule = require('node-schedule');
 const parseMessages = require('./parsers/messageParser');
 
 require('dotenv').config();
 
-// Report Types
+// Configuration imports
 const REPORT_TYPES = require('./config/reportTypes');
-// Telegram Chat Configuration
 const GEO_CONFIG = require('./config/geoConfig');
-// Define themes for analysis
 const themes = require('./config/themes');
-// Define needs and pains for analysis
 const needsAndPains = require('./config/needsAndPains');
-
 
 // Bot Configuration
 const BOT_TOKEN = process.env.BOT_TOKEN;
-// const SESSION_FILE_PATH = path.join(__dirname, 'telegram_session.session');
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
-// Update all geoConfig references to use GEO_CONFIG instead
+
+// Directory paths
 const pathConfig = {
   raw: path.join(__dirname, 'data', 'raw'),
   analyzed: path.join(__dirname, 'data', 'analyzed'),
@@ -40,9 +30,7 @@ const pathConfig = {
 
 // Create directories if they don't exist
 Object.values(pathConfig).forEach(dir => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
 
 // Initialize Telegram bot
@@ -52,12 +40,10 @@ const bot = new Telegraf(BOT_TOKEN);
 const initTelegramClient = require('./telegram/client');
 let telegramClient = null;
 
+// Import required modules
 const analyzeMessages = require('./analyzers/nlpAnalyzer');
-
 const generateCharts = require('./visualization/chartGenerator');
-
 const DeepSeekLLM = require('./llm/deepseek');
-
 const sendContent = require('./delivery/contentSender');
 
 // Function to generate report content
@@ -65,32 +51,25 @@ async function generateContent(type, geo) {
   try {
     const llm = new DeepSeekLLM(pathConfig, "deepseek", "deepseek-reasoner", 4000, geo);
     
-    // Validate geo first
-    if (!GEO_CONFIG[geo]) {
-      throw new Error(`Invalid geo code: ${geo}`);
-    }
+    if (!GEO_CONFIG[geo]) throw new Error(`Invalid geo code: ${geo}`);
 
-    // Handle all possible report types
     switch(type) {
       case REPORT_TYPES.REPORT:
       case 'report_only':
       case REPORT_TYPES.NEW_REPORT:
         return await llm.generate_report(geo);
-      
       case REPORT_TYPES.CHARTS: 
       case 'charts_only':
       case REPORT_TYPES.NEW_CHARTS:
         await generateCharts(geo, pathConfig);
         return 'Charts generated successfully';
-      
       case REPORT_TYPES.FULL:
       case 'full_report':
         const report = await llm.generate_report(geo);
         await generateCharts(geo, pathConfig);
         return report;
-      
       default:
-        throw new Error(`Invalid report type: ${type}. Valid types are: ${Object.values(REPORT_TYPES).join(', ')}`);
+        throw new Error(`Invalid report type: ${type}`);
     }
   } catch (error) {
     console.error('Error generating content:', error);
@@ -127,10 +106,55 @@ function scheduleJobs() {
   // Weekly job
   schedule.scheduleJob('0 0 * * 0', async () => {
     console.log('Running weekly processing');
-    // Any additional weekly processing can be added here
   });
 }
 
+// Helper functions
+function getCurrentDate() {
+  const now = new Date();
+  return now.toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+}
+
+async function checkCache(type, geo) {
+  try {
+    const cacheTime = 3600000; // 1 hour
+    const cacheFile = path.join(pathConfig.cache, `${type}_${geo}.json`);
+    
+    if (fs.existsSync(cacheFile)) {
+      const stats = fs.statSync(cacheFile);
+      const fileAge = Date.now() - stats.mtimeMs;
+      
+      if (fileAge < cacheTime) {
+        return JSON.parse(fs.readFileSync(cacheFile, 'utf8')).content;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error('Cache check error:', error);
+    return null;
+  }
+}
+
+function updateCache(type, geo, content) {
+  try {
+    const cacheDir = pathConfig.cache;
+    if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
+    
+    const cacheFile = path.join(cacheDir, `${type}_${geo}.json`);
+    fs.writeFileSync(cacheFile, JSON.stringify({
+      content,
+      timestamp: Date.now()
+    }));
+  } catch (error) {
+    console.error('Cache update error:', error);
+  }
+}
+
+// Bot handlers
 bot.start(async (ctx) => {
   await ctx.replyWithMarkdown(
     '🖥️ *Добро пожаловать в TG-AI-REPORTER!* 🖥️\n\n' +
@@ -139,15 +163,12 @@ bot.start(async (ctx) => {
     {
       reply_markup: {
         inline_keyboard: [
-          // [{ text: "📋 Получить отчеты", callback_data: "get_reports" }],
-          // [{ text: "📊 Посмотреть графики", callback_data: "view_charts" }],
           [{ text: "🌍 Выбрать регион", callback_data: "select_geo" }]
         ]
       }
     }
   );
   
-  // Добавление удобных кнопок в нижней панели для быстрого доступа
   await ctx.reply('Используйте быстрые команды:', {
     reply_markup: {
       keyboard: [
@@ -159,8 +180,7 @@ bot.start(async (ctx) => {
   });
 });
 
-// Обработка команды помощи
-// Register help command with Telegram API
+// Register help command
 bot.telegram.setMyCommands([
   { command: 'help', description: 'Показать справку' },
   { command: 'start', description: 'Начать работу с ботом' },
@@ -168,25 +188,7 @@ bot.telegram.setMyCommands([
   { command: 'cancel', description: 'Отменить текущую операцию' }
 ]);
 
-bot.command('help', async (ctx) => {
-  try {
-    await showHelp(ctx);
-  } catch (error) {
-    console.error('Error showing help:', error);
-    await ctx.reply('Произошла ошибка при отображении справки');
-  }
-});
-
-bot.action('help', async (ctx) => {
-  try {
-    await ctx.answerCbQuery();
-    await showHelp(ctx);
-  } catch (error) {
-    console.error('Error showing help:', error);
-    await ctx.reply('Произошла ошибка при отображении справки');
-  }
-});
-
+// Help command handler
 async function showHelp(ctx) {
   await ctx.replyWithMarkdown(
     '*📚 Справка по использованию бота*\n\n' +
@@ -209,8 +211,26 @@ async function showHelp(ctx) {
   );
 }
 
-// Обработка текстовых команд для улучшения UX
-// Handle geo selection command
+bot.command('help', async (ctx) => {
+  try {
+    await showHelp(ctx);
+  } catch (error) {
+    console.error('Error showing help:', error);
+    await ctx.reply('Произошла ошибка при отображении справки');
+  }
+});
+
+bot.action('help', async (ctx) => {
+  try {
+    await ctx.answerCbQuery();
+    await showHelp(ctx);
+  } catch (error) {
+    console.error('Error showing help:', error);
+    await ctx.reply('Произошла ошибка при отображении справки');
+  }
+});
+
+// Geo selection handler
 function handleGeoSelection(ctx) {
   const geoButtons = [
     [
@@ -239,18 +259,29 @@ function handleGeoSelection(ctx) {
   });
 }
 
-bot.hears(['🌍 Выбрать регион', 'Выбрать регион', 'Выбрать гео', '/geo'], (ctx) => {
-  return handleGeoSelection(ctx);
-});
+// Text commands
+bot.hears(['🌍 Выбрать регион', 'Выбрать регион', 'Выбрать гео', '/geo'], handleGeoSelection);
 
 bot.hears(['📋 Получить отчеты', 'Отчеты', '/reports'], (ctx) => {
   ctx.answerCbQuery && ctx.answerCbQuery();
-  return handleMenu(ctx, 'Report for');
+  return ctx.reply('Выберите регион для отчета:', {
+    reply_markup: {
+      inline_keyboard: Object.keys(GEO_CONFIG).map(geo => 
+        [{ text: `${GEO_CONFIG[geo].name}`, callback_data: `report_only_${geo}` }]
+      ).concat([[{ text: '◀️ На главную', callback_data: 'back_main' }]])
+    }
+  });
 });
 
 bot.hears(['📊 Графики', 'Графики', '/charts'], (ctx) => {
   ctx.answerCbQuery && ctx.answerCbQuery();
-  return handleMenu(ctx, 'Charts for');
+  return ctx.reply('Выберите регион для графиков:', {
+    reply_markup: {
+      inline_keyboard: Object.keys(GEO_CONFIG).map(geo => 
+        [{ text: `${GEO_CONFIG[geo].name}`, callback_data: `charts_only_${geo}` }]
+      ).concat([[{ text: '◀️ На главную', callback_data: 'back_main' }]])
+    }
+  });
 });
 
 bot.hears(['ℹ️ Помощь', 'Помощь', '/help'], (ctx) => {
@@ -258,7 +289,6 @@ bot.hears(['ℹ️ Помощь', 'Помощь', '/help'], (ctx) => {
   return showHelp(ctx);
 });
 
-// Команда для отмены текущей операции
 bot.command('cancel', (ctx) => {
   return ctx.reply('✅ Текущая операция отменена', {
     reply_markup: {
@@ -267,8 +297,7 @@ bot.command('cancel', (ctx) => {
   });
 });
 
-
-// Улучшенный обработчик выбора региона
+// Callback handlers
 bot.action(/geo_(.+)/, async (ctx) => {
   const geo = ctx.match[1];
   const geoName = GEO_CONFIG[geo].name;
@@ -279,16 +308,12 @@ bot.action(/geo_(.+)/, async (ctx) => {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
-          [
-            { text: '📝 Отчет', callback_data: `report_only_${geo}` }, 
-            // { text: '📊 Графики', callback_data: `charts_only_${geo}` }
-          ],
+          [{ text: '📝 Отчет', callback_data: `report_only_${geo}` }],
           [{ text: '📈 Полный отчет + графики', callback_data: `full_report_${geo}` }],
           [
             { text: '🔄 Новый отчет', callback_data: `new_report_${geo}` }, 
             { text: '📊 Графики', callback_data: `new_charts_${geo}` }
           ],
-          
           [{ text: '◀️ Назад к выбору региона', callback_data: 'select_geo' }]
         ]
       }
@@ -296,68 +321,19 @@ bot.action(/geo_(.+)/, async (ctx) => {
   );
 });
 
-// Handle chart view selection
-bot.action(/charts_(.+)/, async (ctx) => {
-  const geo = ctx.match[1].toUpperCase(); // Ensure uppercase geo code
-  
-  if (!GEO_CONFIG[geo]) {
-    await ctx.reply(`❌ Invalid region code: ${geo}. Available regions: ${Object.keys(GEO_CONFIG).join(', ')}`);
-    return;
-  }
-  
-  await ctx.reply(`Выберите тип графика для ${geo}:`, {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: 'Анализ настроений', callback_data: `chart_sentiment_${geo}` }],
-        [{ text: 'Распределение тем', callback_data: `chart_themes_${geo}` }],
-        [{ text: 'Потребности и проблемы', callback_data: `chart_needs_${geo}` }],
-        [{ text: 'Недельные тренды', callback_data: `chart_trends_${geo}` }],
-        [{ text: 'Назад', callback_data: `geo_${geo}` }]
-      ]
-    }
-  });
-});
-
-// Handle specific chart view
-bot.action(/chart_([a-z]+)_([A-Z]+)/, async (ctx) => {
-  const chartType = ctx.match[1];
-  const geo = ctx.match[2].toUpperCase(); // Ensure uppercase geo code
-  
-  if (!GEO_CONFIG[geo]) {
-    await ctx.reply(`❌ Invalid region code: ${geo}. Available regions: ${Object.keys(GEO_CONFIG).join(', ')}`);
-    return;
-  }
-  
-  try {
-    const chartPath = path.join(pathConfig.charts, `${chartType}_${geo}.png`);
-    if (!fs.existsSync(chartPath)) {
-      await generateCharts(geo, pathConfig);
-    }
-    
-    await ctx.replyWithPhoto({ source: chartPath }, {
-      caption: `${chartType === 'sentiment' ? 'Анализ настроений' : 
-                chartType === 'themes' ? 'Распределение тем' :
-                chartType === 'needs' ? 'Потребности и проблемы' :
-                'Недельные тренды'} для ${geo}`
-    });
-  } catch (error) {
-    await ctx.reply(`❌ Error displaying chart: ${error.message}`);
-  }
-});
-
 // Handle report button - shows last generated report
 bot.action(/report_only_(.+)/, async (ctx) => {
   const geo = ctx.match[1];
   try {
     const llm = new DeepSeekLLM(pathConfig, "deepseek", "deepseek-reasoner", 4000, geo);
-    const report = await llm.generate_report(geo, false); // Get cached report
+    const report = await llm.generate_report(geo, false);
     await sendContent(ctx, REPORT_TYPES.REPORT, geo, report, pathConfig, generateCharts);
   } catch (error) {
     await ctx.reply(`❌ Error getting report: ${error.message}`);
   }
 });
 
-// Handle new report button - generates fresh report with progress bar
+// Handle new report button
 bot.action(/new_report_(.+)/, async (ctx) => {
   const geo = ctx.match[1];
   const geoName = GEO_CONFIG[geo].name;
@@ -365,7 +341,6 @@ bot.action(/new_report_(.+)/, async (ctx) => {
   let progressInterval;
   
   try {
-    // Show initial progress message
     const progressMessage = await ctx.replyWithMarkdown(
       `🔄 *Генерация нового отчета для ${geoName}*\n` +
       `▰▱▱▱▱▱▱▱▱▱ 10%\n` +
@@ -379,11 +354,10 @@ bot.action(/new_report_(.+)/, async (ctx) => {
       }
     );
 
-    // Progress simulation
     let progress = 10;
     progressInterval = setInterval(async () => {
       try {
-        progress = Math.min(progress + 5, 90); // Don't go to 100% until done
+        progress = Math.min(progress + 5, 90);
         const progressBar = '▰'.repeat(Math.floor(progress/10)) + '▱'.repeat(10 - Math.floor(progress/10));
         await ctx.telegram.editMessageText(
           ctx.chat.id,
@@ -399,11 +373,9 @@ bot.action(/new_report_(.+)/, async (ctx) => {
       }
     }, 2000);
 
-    // Generate report
     const llm = new DeepSeekLLM(pathConfig, "deepseek", "deepseek-reasoner", 4000, geo);
     const report = await llm.generate_report(geo, true);
 
-    // Complete progress
     clearInterval(progressInterval);
     await ctx.telegram.editMessageText(
       ctx.chat.id,
@@ -426,14 +398,14 @@ bot.action(/full_report_(.+)/, async (ctx) => {
   const geo = ctx.match[1];
   try {
     const llm = new DeepSeekLLM(pathConfig, "deepseek", "deepseek-reasoner", 4000, geo);
-    const report = await llm.generate_report(geo, false); // Get cached report
+    const report = await llm.generate_report(geo, false);
     await sendContent(ctx, REPORT_TYPES.FULL, geo, report, pathConfig, generateCharts);
   } catch (error) {
     await ctx.reply(`❌ Error getting full report: ${error.message}`);
   }
 });
 
-// Handle charts button - shows last generated charts
+// Handle charts button
 bot.action(/charts_only_(.+)/, async (ctx) => {
   const geo = ctx.match[1];
   try {
@@ -443,7 +415,7 @@ bot.action(/charts_only_(.+)/, async (ctx) => {
   }
 });
 
-// Handle new charts button - generates fresh charts
+// Handle new charts button
 bot.action(/new_charts_(.+)/, async (ctx) => {
   const geo = ctx.match[1];
   try {
@@ -454,516 +426,59 @@ bot.action(/new_charts_(.+)/, async (ctx) => {
   }
 });
 
-// Обработка отчетов с прогресс-баром и возможностью отмены
-async function handleReport(ctx) {
-  // Extract type and geo from callback data
-  const match = ctx.match[0].match(/^([a-z_]+)_([A-Z]+)$/);
-  if (!match) {
-    return ctx.reply('❌ Invalid request format');
+// Handle chart types
+bot.action(/charts_(.+)/, async (ctx) => {
+  const geo = ctx.match[1].toUpperCase();
+  
+  if (!GEO_CONFIG[geo]) {
+    await ctx.reply(`❌ Invalid region code: ${geo}`);
+    return;
   }
   
-  const type = match[1];
-  const geo = match[2];
-  
-  if (!geo || !GEO_CONFIG[geo]) {
-    return ctx.reply('❌ Неизвестный регион');
-  }
-
-  // Validate report type
-  const validTypes = [
-    'report_only', 'charts_only', 'full_report',
-    'new_report', 'new_charts',
-    ...Object.values(REPORT_TYPES)
-  ];
-  
-  if (!validTypes.includes(type)) {
-    return ctx.reply(`❌ Неподдерживаемый тип отчета: ${type}`);
-  }
-  const geoName = GEO_CONFIG[geo].name;
-  const userID = ctx.from.id;
-  let progressInterval;
-  let cancelRequested = false;
-  
-  try {
-    // Handle cached reports/charts
-    if (type === 'report_only' || type === 'charts_only') {
-      const cacheType = type === 'report_only' ? REPORT_TYPES.REPORT : REPORT_TYPES.CHARTS;
-      const cachedContent = await checkCache(cacheType, geo);
-      if (cachedContent) {
-        await ctx.reply(`✅ Используем кешированные данные для ${geoName}`);
-        await sendContent(ctx, cacheType, geo, cachedContent);
-        return;
-      }
-    }
-
-    // Handle new reports/charts
-    if (type === 'new_report' || type === 'new_charts') {
-      const reportType = type === 'new_report' ? REPORT_TYPES.REPORT : REPORT_TYPES.CHARTS;
-      const report = await generateContent(reportType, geo);
-      updateCache(reportType, geo, report);
-      await sendContent(ctx, reportType, geo, report);
-      return;
-    }
-
-    // Handle full reports (always generate fresh)
-    if (type === 'full_report') {
-      const report = await generateContent(REPORT_TYPES.FULL, geo);
-      updateCache(REPORT_TYPES.FULL, geo, report);
-      await sendContent(ctx, REPORT_TYPES.FULL, geo, report);
-      return;
-    }
-    
-    // Отправляем сообщение о начале генерации с кнопкой отмены
-    const progressMessage = await ctx.replyWithMarkdown(
-      getProgressMessage(type, geo), 
-      {
-        reply_markup: { 
-          inline_keyboard: [
-            [{ text: '❌ Отменить', callback_data: `cancel_${userID}_${Date.now()}` }]
-          ] 
-        }
-      }
-    );
-
-    // Имитация прогресса с интервалом обновления
-    let progress = 0;
-    progressInterval = setInterval(async () => {
-      if (cancelRequested) {
-        clearInterval(progressInterval);
-        return;
-      }
-      
-      try {
-        progress = Math.min(progress + 5, 95); // Не доходим до 100% для имитации ожидания финального результата
-        
-        // Динамически изменяющийся текст в зависимости от прогресса
-        const progressText = getProgressUpdate(type, geo, progress);
-        
-        await ctx.telegram.editMessageText(
-          ctx.chat.id, 
-          progressMessage.message_id, 
-          null, 
-          progressText, 
-          { 
-            parse_mode: 'Markdown',
-            reply_markup: { 
-              inline_keyboard: [
-                [{ text: '❌ Отменить', callback_data: `cancel_${userID}_${Date.now()}` }]
-              ] 
-            }
-          }
-        );
-      } catch (editError) {
-        console.log('Progress update error:', editError.message);
-      }
-    }, 2000);
-    
-    // Обработка запроса на отмену
-    const cancelHandler = async (cancelCtx) => {
-      const [cancelUserId] = cancelCtx.match[1].split('_');
-      if (cancelCtx.from.id.toString() === cancelUserId) {
-        cancelRequested = true;
-        await cancelCtx.answerCbQuery('⚠️ Операция отменяется...');
-        await ctx.telegram.editMessageText(
-          ctx.chat.id,
-          progressMessage.message_id,
-          null,
-          '❌ *Операция отменена пользователем*',
-          { parse_mode: 'Markdown' }
-        );
-        
-        // Удаляем обработчик после использования
-        bot.action(/cancel_(.+)/, () => {});
-      }
-    };
-    
-    // Регистрируем обработчик для отмены
-    bot.action(/cancel_(.+)/, cancelHandler);
-    
-    // Генерируем контент, если операция не была отменена
-    if (!cancelRequested) {
-      const report = await generateContent(type, geo);
-      
-      // Обновляем кеш
-      updateCache(type, geo, report);
-      
-      // Останавливаем индикатор прогресса
-      clearInterval(progressInterval);
-      progressInterval = null;
-      
-      // Показываем финальное сообщение об успешном завершении
-      const completion = getCompletionMessage(type, geo);
-      await ctx.telegram.editMessageText(
-        ctx.chat.id,
-        progressMessage.message_id,
-        null,
-        completion.text,
-        { 
-          parse_mode: 'Markdown',
-          reply_markup: completion.reply_markup 
-        }
-      );
-      
-      // Отправляем содержимое отчета
-      await sendContent(ctx, type, geo, report);
-    }
-    
-    // Удаляем обработчик после завершения
-    bot.action(/cancel_(.+)/, () => {});
-    
-  } catch (error) {
-    console.error(`Error in handleReport:`, error);
-    
-    if (progressInterval) {
-      clearInterval(progressInterval);
-      progressInterval = null;
-    }
-    
-    await ctx.replyWithMarkdown(
-      getErrorMessage(type, geo), 
-      {
-        reply_markup: { 
-          inline_keyboard: [
-            [{ text: '🔄 Повторить', callback_data: `${type}_${geo}` }],
-            [{ text: '◀️ Вернуться назад', callback_data: `geo_${geo}` }]
-          ] 
-        }
-      }
-    );
-  }
-}
-
-// Функции для работы с кешем
-async function checkCache(type, geo) {
-  try {
-    const cacheTime = 3600000; // 1 час в миллисекундах
-    const cacheFile = path.join(pathConfig.cache, `${type}_${geo}.json`);
-    
-    if (fs.existsSync(cacheFile)) {
-      const stats = fs.statSync(cacheFile);
-      const fileAge = Date.now() - stats.mtimeMs;
-      
-      // Если кеш свежий, используем его
-      if (fileAge < cacheTime) {
-        const cacheData = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-        return cacheData.content;
-      }
-    }
-    
-    return null;
-  } catch (error) {
-    console.error('Cache check error:', error);
-    return null;
-  }
-}
-
-function updateCache(type, geo, content) {
-  try {
-    const cacheDir = pathConfig.cache;
-    if (!fs.existsSync(cacheDir)) {
-      fs.mkdirSync(cacheDir, { recursive: true });
-    }
-    
-    const cacheFile = path.join(cacheDir, `${type}_${geo}.json`);
-    fs.writeFileSync(cacheFile, JSON.stringify({
-      content,
-      timestamp: Date.now()
-    }));
-  } catch (error) {
-    console.error('Cache update error:', error);
-  }
-}
-
-// Улучшенные сообщения о процессе
-function getProgressMessage(type, geo) {
-  const geoName = GEO_CONFIG[geo].name;
-  let icon = '📝';
-  let action = 'отчета';
-  
-  switch (type) {
-    case REPORT_TYPES.REPORT:
-      icon = '📝';
-      action = 'отчета';
-      break;
-    case REPORT_TYPES.CHARTS:
-      icon = '📊';
-      action = 'графиков';
-      break;
-    case REPORT_TYPES.FULL:
-      icon = '🚀';
-      action = 'полного отчета';
-      break;
-    case REPORT_TYPES.NEW_REPORT:
-      icon = '🔄';
-      action = 'нового отчета';
-      break;
-    case REPORT_TYPES.NEW_CHARTS:
-      icon = '🔄';
-      action = 'новых графиков';
-      break;
-  }
-  
-  return `${icon} *Начинаем подготовку ${action} для региона ${geoName}*\n\nПожалуйста, подождите. Это может занять некоторое время...`;
-}
-
-function getProgressUpdate(type, geo, progress) {
-  const geoName = GEO_CONFIG[geo].name;
-  let action;
-  
-  switch (type) {
-    case REPORT_TYPES.REPORT:
-    case REPORT_TYPES.NEW_REPORT:
-      action = 'отчета';
-      break;
-    case REPORT_TYPES.CHARTS:
-    case REPORT_TYPES.NEW_CHARTS:
-      action = 'графиков';
-      break;
-    case REPORT_TYPES.FULL:
-      action = 'полного отчета';
-      break;
-  }
-  
-  // Создаем более информативный прогресс-бар
-  const totalBlocks = 20;
-  const filledBlocks = Math.floor(progress / 100 * totalBlocks);
-  const progressBar = '▰'.repeat(filledBlocks) + '▱'.repeat(totalBlocks - filledBlocks);
-  
-  // Динамическое описание текущего этапа обработки в зависимости от прогресса
-  let progressStage;
-  if (progress < 20) {
-    progressStage = "Сбор данных...";
-  } else if (progress < 40) {
-    progressStage = "Анализ информации...";
-  } else if (progress < 60) {
-    progressStage = "Генерация контента...";
-  } else if (progress < 80) {
-    progressStage = "Подготовка результатов...";
-  } else {
-    progressStage = "Финальная обработка...";
-  }
-  
-  const remainingTime = Math.max(0, 30 - (progress * 0.3)).toFixed(0);
-  
-  return `*Создание ${action} для ${geoName}: ${progress}%*\n` +
-    `${progressBar}\n\n` +
-    `Текущий этап: ${progressStage}\n` +
-    `⏳ Примерное время ожидания: ${remainingTime} секунд`;
-}
-
-function getErrorMessage(type, geo) {
-  const geoName = GEO_CONFIG[geo].name;
-  let action;
-  
-  switch (type) {
-    case 'report_only':
-      action = 'отчета';
-      break;
-    case 'charts_only':
-      action = 'графиков';
-      break;
-    case 'full_report':
-      action = 'полного отчета';
-      break;
-    case 'new_report':
-      action = 'нового отчета';
-      break;
-    case 'new_charts':
-      action = 'новых графиков';
-      break;
-    default:
-      action = 'данных';
-  }
-
-  return `❌ *Ошибка при создании ${action} для ${geoName}*\n\n` +
-    `Пожалуйста, попробуйте снова или обратитесь в поддержку.`;
-}
-
-function getCompletionMessage(type, geo) {
-  const geoName = GEO_CONFIG[geo].name;
-  const flag = {
-    'DEU': '🇩🇪',
-    'ESP': '🇪🇸', 
-    'PRT': '🇵🇹'
-  }[geo] || '🌍';
-
-  let message, buttons;
-  
-  switch (type) {
-    case REPORT_TYPES.REPORT:
-      message = `✅ *Отчет успешно сгенерирован!* ${flag}\n\nРегион: ${geoName}\nДата: ${getCurrentDate()}\n\nОтчет содержит актуальную информацию и аналитические данные.`;
-      buttons = [
-        [{ text: '📊 Показать графики', callback_data: `charts_${geo}` }],
-        [{ text: '🔄 Создать новый отчет', callback_data: `new_report_${geo}` }],
-        [{ text: '📈 Полный отчет', callback_data: `full_report_${geo}` }]
-      ];
-      break;
-    case REPORT_TYPES.CHARTS:
-      message = `✅ *Графики успешно сгенерированы!* ${flag}\n\nРегион: ${geoName}\nДата: ${getCurrentDate()}\n\nВизуализации подготовлены на основе последних доступных данных.`;
-      buttons = [
-        [{ text: '📋 Показать отчет', callback_data: `report_${geo}` }],
-        [{ text: '🔄 Создать новые графики', callback_data: `new_charts_${geo}` }],
-        [{ text: '📈 Полный отчет', callback_data: `full_report_${geo}` }]
-      ];
-      break;
-    case REPORT_TYPES.FULL:
-      message = `✅ *Полный отчет успешно сгенерирован!* ${flag}\n\nРегион: ${geoName}\nДата: ${getCurrentDate()}\n\nОтчет включает в себя аналитическую информацию и визуализации.`;
-      buttons = [
-        [{ text: '📋 Только отчет', callback_data: `report_${geo}` }],
-        [{ text: '📊 Только графики', callback_data: `charts_${geo}` }],
-        [{ text: '🔄 Создать заново', callback_data: `full_report_${geo}` }]
-      ];
-      break;
-    case REPORT_TYPES.NEW_REPORT:
-      message = `✅ *Новый отчет успешно сгенерирован!* ${flag}\n\nРегион: ${geoName}\nДата: ${getCurrentDate()}\n\nОтчет содержит самые свежие данные.`;
-      buttons = [
-        [{ text: '📊 Показать графики', callback_data: `charts_${geo}` }],
-        [{ text: '📈 Полный отчет', callback_data: `full_report_${geo}` }]
-      ];
-      break;
-    case REPORT_TYPES.NEW_CHARTS:
-      message = `✅ *Новые графики успешно сгенерированы!* ${flag}\n\nРегион: ${geoName}\nДата: ${getCurrentDate()}\n\nВизуализации обновлены согласно последним данным.`;
-      buttons = [
-        [{ text: '📋 Показать отчет', callback_data: `report_${geo}` }],
-        [{ text: '📈 Полный отчет', callback_data: `full_report_${geo}` }]
-      ];
-      break;
-  }
-
-  return {
-    text: message,
+  await ctx.reply(`Выберите тип графика для ${geo}:`, {
     reply_markup: {
-      inline_keyboard: buttons
+      inline_keyboard: [
+        [{ text: 'Анализ настроений', callback_data: `chart_sentiment_${geo}` }],
+        [{ text: 'Распределение тем', callback_data: `chart_themes_${geo}` }],
+        [{ text: 'Потребности и проблемы', callback_data: `chart_needs_${geo}` }],
+        [{ text: 'Недельные тренды', callback_data: `chart_trends_${geo}` }],
+        [{ text: 'Назад', callback_data: `geo_${geo}` }]
+      ]
     }
-  };
-}
-
-// Helper function to get formatted current date
-function getCurrentDate() {
-  const now = new Date();
-  return now.toLocaleDateString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
   });
-}
+});
 
-// Original report handler (kept for reference but not used directly)
-async function oldReportHandler(ctx) {
-  const geo = ctx.match[1];
-  const userID = ctx.from.id;
-  let progressInterval;
+// Handle specific chart view
+bot.action(/chart_([a-z]+)_([A-Z]+)/, async (ctx) => {
+  const chartType = ctx.match[1];
+  const geo = ctx.match[2].toUpperCase();
+  
+  if (!GEO_CONFIG[geo]) {
+    await ctx.reply(`❌ Invalid region code: ${geo}`);
+    return;
+  }
   
   try {
-    // Show initial progress message
-    const progressMessage = await ctx.replyWithMarkdown(
-      `🚀 *Начато создание отчета для ${GEO_CONFIG[geo].name}*\n` +
-      `▰▰▰▰▰▰▰▰▰▰ 0%\n` +
-      `⏳ Примерное время: 15-30 секунд`,
-      {
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: '❌ Отменить', callback_data: `cancel_${userID}` }]
-          ]
-        }
-      }
-    );
-
-    // Progress simulation
-    let progress = 0;
-    progressInterval = setInterval(async () => {
-      try {
-        progress += 10;
-        const progressBar = '▰'.repeat(progress/10) + '▱'.repeat(10 - progress/10);
-        await ctx.telegram.editMessageText(
-          ctx.chat.id,
-          progressMessage.message_id,
-          null,
-          `🚀 *Прогресс отчета: ${progress}%*\n` +
-          `${progressBar}\n` +
-          `⏳ Осталось: ${30 - (progress*0.3)} секунд`,
-          { parse_mode: 'Markdown' }
-        );
-      } catch (editError) {
-        console.log('Progress update error:', editError.message);
-      }
-    }, 3000);
-
-    // Real report generation
-    const llm = new DeepSeekLLM(pathConfig, "deepseek", "deepseek-reasoner", 4000, geo);
-    const report = await llm.generate_report(geo);
-    
-    // Format and send report
-    clearInterval(progressInterval);
-    const formattedReport = `📊 *${GEO_CONFIG[geo].name} Analytics Report*\n\n${report}`;
-    
-    await ctx.telegram.editMessageText(
-      ctx.chat.id,
-      progressMessage.message_id,
-      null,
-      `✅ *Отчет успешно сгенерирован!*\n` +
-      `📥 Доступен для скачивания 24 часа`,
-      {
-        parse_mode: 'Markdown',
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: '📩 Скачать PDF', callback_data: `download_${geo}` }],
-            [{ text: '📊 Посмотреть онлайн', url: 'https://analytics.example.com/reports' }]
-          ]
-        }
-      }
-    );
-
-    // Send all charts
-    const chartTypes = ['sentiment', 'themes', 'needs', 'trends'];
-    for (const type of chartTypes) {
-      const chartPath = path.join(pathConfig.charts, `${type}_${geo}.png`);
-      if (fs.existsSync(chartPath)) {
-        await ctx.replyWithPhoto({ source: chartPath }, {
-          caption: type === 'sentiment' ? '📊 Анализ настроений' :
-                   type === 'themes' ? '📈 Распределение тем' :
-                   type === 'needs' ? '🔍 Потребности и проблемы' :
-                   '📅 Недельные тренды'
-        });
-      }
+    const chartPath = path.join(pathConfig.charts, `${chartType}_${geo}.png`);
+    if (!fs.existsSync(chartPath)) {
+      await generateCharts(geo, pathConfig);
     }
-
-    // Send report
-    await ctx.replyWithMarkdown(formattedReport, {
-      disable_web_page_preview: true,
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: '🔄 Создать снова', callback_data: `report_${geo}` }],
-          [{ text: '📚 Все отчеты', callback_data: 'all_reports' }]
-        ]
-      }
+    
+    await ctx.replyWithPhoto({ source: chartPath }, {
+      caption: `${chartType === 'sentiment' ? 'Анализ настроений' : 
+                chartType === 'themes' ? 'Распределение тем' :
+                chartType === 'needs' ? 'Потребности и проблемы' :
+                'Недельные тренды'} для ${geo}`
     });
-
   } catch (error) {
-    clearInterval(progressInterval);
-    await ctx.replyWithMarkdown(
-      `❌ *Ошибка при создании отчета*\n` +
-      `🔧 ${error.message}\n` +
-      `⚠️ Пожалуйста, попробуйте снова или обратитесь в поддержку`,
-      {
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: '🔄 Повторить', callback_data: `report_${geo}` }],
-            [{ text: '📞 Поддержка', callback_data: 'contact_support' }]
-          ]
-        }
-      }
-    );
+    await ctx.reply(`❌ Error displaying chart: ${error.message}`);
   }
-}
-      
+});
 
-// Cancel operation handler - immediately stops any ongoing operation
+// Cancel operation handler
 bot.action(/cancel_(.+)/, async (ctx) => {
   const userID = ctx.match[1].split('_')[0];
   if (ctx.from.id.toString() === userID) {
-    // Immediately stop any ongoing processing
-    process.emit('SIGINT');
     await ctx.answerCbQuery('⚠️ Операция отменена!');
     await ctx.deleteMessage();
     await ctx.reply('✅ Текущая операция успешно отменена');
@@ -1015,8 +530,8 @@ bot.action('back_main', async (ctx) => {
 // Get reports menu
 bot.action('get_reports', async (ctx) => {
   const geoButtons = Object.keys(GEO_CONFIG).map(geo => [{ 
-    text: `${geo === 'DEU' ? '🇩🇪' : geo === 'ESP' ? '🇪🇸' : geo === 'PRT' ? '🇵🇹' : geo === 'POL' ? '🇵🇱' : geo === 'SWE' ? '🇸🇪' : geo === 'FRA' ? '🇫🇷' : geo === 'ITA' ? '🇮🇹' : '🇨🇿'} Отчет для ${GEO_CONFIG[geo].name}`, 
-    callback_data: `report_${geo}` 
+    text: `${GEO_CONFIG[geo].name}`, 
+    callback_data: `report_only_${geo}` 
   }]);
   geoButtons.push([{ text: '◀️ На главную', callback_data: 'back_main' }]);
   
@@ -1030,7 +545,7 @@ bot.action('get_reports', async (ctx) => {
 // View charts menu
 bot.action('view_charts', async (ctx) => {
   const geoButtons = Object.keys(GEO_CONFIG).map(geo => [{ 
-    text: `${geo === 'DEU' ? '🇩🇪' : geo === 'ESP' ? '🇪🇸' : geo === 'PRT' ? '🇵🇹' : geo === 'POL' ? '🇵🇱' : geo === 'SWE' ? '🇸🇪' : geo === 'FRA' ? '🇫🇷' : geo === 'ITA' ? '🇮🇹' : '🇨🇿'} Графики для ${GEO_CONFIG[geo].name}`, 
+    text: `${GEO_CONFIG[geo].name}`, 
     callback_data: `charts_${geo}` 
   }]);
   geoButtons.push([{ text: '◀️ На главную', callback_data: 'back_main' }]);
@@ -1047,9 +562,7 @@ async function startBot() {
   try {
     // Initialize directories
     Object.values(pathConfig).forEach(dir => {
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-      }
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     });
     
     // Initialize Telegram client
